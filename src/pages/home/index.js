@@ -8,20 +8,20 @@ import { useParams, Link } from 'react-router-dom';
 
 const HomePage = () => {
   const [data, setData] = useState(null);
-  const type = useParams(); ; // Fix me!
+  const { type } = useParams();
 
   useEffect(() => {
     async function getPetsData() {
-      const petsData = await getPets(type);
-      setData(petsData);
+      try {
+        const petsData = await getPets(type);
+        setData(petsData);
+      } catch (e) {
+        console.error(e);
+      }
     }
 
     getPetsData();
   }, [type]);
-
-  if (!data) {
-    return <h2>Loading...</h2>;
-  }
 
   return (
     <div className="page">
@@ -31,7 +31,9 @@ const HomePage = () => {
         available for adoption near you
       </h3>
 
-      {data.length ? (
+      {!data ? (
+        <h2>Loading...</h2>
+      ) : data.length ? (
         <div className="grid">
           {data.map((animal) => (
             <Link // Change me to a Link!

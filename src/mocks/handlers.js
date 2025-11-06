@@ -4,7 +4,7 @@ import animals from './data/animals.json';
 import details from './data/details.json';
 
 export const handlers = [
-  http.get('/types', () => {
+  http.get('/animals/types', () => {
     return HttpResponse.json(types);
   }),
   http.get('/animals', ({ request }) => {
@@ -18,7 +18,7 @@ export const handlers = [
         (animal) => animal.type.toLowerCase() === type.toLowerCase()
       );
     }
-    if (query !== '') {
+    if (query) {
       response = response.filter(
         (animal) =>
           animal.contact.address.state

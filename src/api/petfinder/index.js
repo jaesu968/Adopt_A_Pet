@@ -31,7 +31,7 @@ export const getPetDetails = async (id) => {
 };
 
 export const getPetTypes = async () => {
-  const requestUrl = `/types`;
+  const requestUrl = `/animals/types`;
   const response = await fetch(requestUrl, {
     method: 'GET'
   });

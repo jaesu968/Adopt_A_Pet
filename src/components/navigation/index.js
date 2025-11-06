@@ -11,8 +11,12 @@ const Navigation = () => {
 
   useEffect(() => {
     async function getPetTypesData() {
-      const { types } = await getPetTypes();
-      setPetTypes(types);
+      try {
+        const { types } = await getPetTypes();
+        setPetTypes(types);
+      } catch (e) {
+        console.error(e);
+      }
     }
 
     getPetTypesData();
@@ -33,7 +37,7 @@ const Navigation = () => {
             All Pets
           </NavLink>
         </li>
-        {petTypes
+        {petTypes.length
           ? petTypes.map((type) => (
               <li key={type.name}>
                 {/* These links should be NavLink component and add a special active class name if its an active link */}
@@ -45,7 +49,7 @@ const Navigation = () => {
                 </NavLink>
               </li>
             ))
-          : 'Loading...'}
+          : <li>Loading...</li>}
       </ul>
     </nav>
   );
