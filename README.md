@@ -114,13 +114,3 @@ The main files for this project are in the `src/` folder, organized by pages, co
 - This app uses **Mock Service Worker (MSW)** to simulate API calls
 - For best experience, use Google Chrome with third-party cookies enabled
 
-## Next Steps
-
-Once you have the app running, your task is to:
-1. Install React Router
-2. Set up routes in `App.js`
-3. Connect the navigation and links
-4. Handle URL parameters for pet details
-5. Add search functionality
-
-Happy coding! 🚀
