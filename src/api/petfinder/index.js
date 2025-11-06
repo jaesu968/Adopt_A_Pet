@@ -6,6 +6,10 @@ export const getPets = async (type = '', query = '') => {
     method: 'GET'
   });
 
+  if (!response.ok) {
+    throw new Error('Failed to fetch pets');
+  }
+
   const json = await response.json();
 
   return json;
@@ -17,6 +21,10 @@ export const getPetDetails = async (id) => {
     method: 'GET'
   });
 
+  if (!response.ok) {
+    throw new Error(`Failed to fetch details for pet id ${id}`);
+  }
+
   const json = await response.json();
 
   return json;
@@ -27,6 +35,10 @@ export const getPetTypes = async () => {
   const response = await fetch(requestUrl, {
     method: 'GET'
   });
+
+  if (!response.ok) {
+    throw new Error('Failed to fetch pet types');
+  }
 
   const json = await response.json();
 

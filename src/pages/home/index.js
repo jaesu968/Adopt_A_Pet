@@ -1,66 +1,52 @@
 import React, { useEffect, useState } from 'react';
 import { getPets } from '../../api/petfinder';
+import Pet from '../../components/pet';
 import Hero from '../../components/hero';
 
-// import useParams
-// import Link
+import { useParams } from 'react-router-dom';
 
 const HomePage = () => {
   const [data, setData] = useState(null);
-  const type = ''; // Fix me!
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  const { type } = useParams();
 
   useEffect(() => {
     async function getPetsData() {
-      const petsData = await getPets(type);
-      setData(petsData);
+      try {
+        const petsData = await getPets(type || '');
+        setData(petsData);
+        setError(null);
+        setLoading(false);
+      } catch (e) {
+        setError(e);
+        setLoading(false);
+      }
     }
 
     getPetsData();
   }, [type]);
 
-  if (!data) {
-    return <h2>Loading...</h2>;
-  }
-
   return (
     <div className="page">
       <Hero />
       <h3>
-        <span className="pet-type-label">{type ? `${type}s` : 'Pets'}</span>{' '}
+        <span className="pet-type-label">
+          {type ? `${type}s` : 'All Pets'}
+        </span>{' '}
         available for adoption near you
       </h3>
 
-      {data.length ? (
+      {loading && <p>Loading...</p>}
+      {error && <p>Error fetching pets: {error.message}</p>}
+
+      {data && (
         <div className="grid">
-          {data.map((animal) => (
-            <a // Change me to a Link!
-              key={animal.id}
-              href={`/${animal.type.toLowerCase()}/${animal.id}`}
-              className="pet"
-            >
-              <article>
-                <div className="pet-image-container">
-                  {
-                    <img
-                      className="pet-image"
-                      src={
-                        animal.photos[0]?.medium ||
-                        '/missing-animal.png'
-                      }
-                      alt=""
-                    />
-                  }
-                </div>
-                <h3>{animal.name}</h3>
-                <p>Breed: {animal.breeds.primary}</p>
-                <p>Color: {animal.colors.primary}</p>
-                <p>Gender: {animal.gender}</p>
-              </article>
-            </a> // Don't forget to change me!
+          {data.map((pet) => (
+            <Pet animal={pet} key={pet.id} />
           ))}
         </div>
-      ) : (
-        <p className="prompt">No {type}s available for adoption now.</p>
       )}
     </div>
   );
