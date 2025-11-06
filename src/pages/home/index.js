@@ -1,52 +1,67 @@
 import React, { useEffect, useState } from 'react';
 import { getPets } from '../../api/petfinder';
-import Pet from '../../components/pet';
 import Hero from '../../components/hero';
 
-import { useParams } from 'react-router-dom';
+// import useParams
+import { useParams, Link } from 'react-router-dom';
+// import Link
 
 const HomePage = () => {
   const [data, setData] = useState(null);
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  const { type } = useParams();
+  const type = useParams(); ; // Fix me!
 
   useEffect(() => {
     async function getPetsData() {
-      try {
-        const petsData = await getPets(type || '');
-        setData(petsData);
-        setError(null);
-        setLoading(false);
-      } catch (e) {
-        setError(e);
-        setLoading(false);
-      }
+      const petsData = await getPets(type);
+      setData(petsData);
     }
 
     getPetsData();
   }, [type]);
 
+  if (!data) {
+    return <h2>Loading...</h2>;
+  }
+
   return (
     <div className="page">
       <Hero />
       <h3>
-        <span className="pet-type-label">
-          {type ? `${type}s` : 'All Pets'}
-        </span>{' '}
+        <span className="pet-type-label">{type ? `${type}s` : 'Pets'}</span>{' '}
         available for adoption near you
       </h3>
 
-      {loading && <p>Loading...</p>}
-      {error && <p>Error fetching pets: {error.message}</p>}
-
-      {data && (
+      {data.length ? (
         <div className="grid">
-          {data.map((pet) => (
-            <Pet animal={pet} key={pet.id} />
+          {data.map((animal) => (
+            <Link // Change me to a Link!
+              key={animal.id}
+              to={`/${animal.type.toLowerCase()}/${animal.id}`}
+              className="pet"
+            >
+              <article>
+                <div className="pet-image-container">
+                  {
+                    <img
+                      className="pet-image"
+                      src={
+                        animal.photos[0]?.medium ||
+                        '/missing-animal.png'
+                      }
+                      alt=""
+                    />
+                  }
+                </div>
+                <h3>{animal.name}</h3>
+                <p>Breed: {animal.breeds.primary}</p>
+                <p>Color: {animal.colors.primary}</p>
+                <p>Gender: {animal.gender}</p>
+              </article>
+            </Link> // Don't forget to change me!
           ))}
         </div>
+      ) : (
+        <p className="prompt">No {type}s available for adoption now.</p>
       )}
     </div>
   );
